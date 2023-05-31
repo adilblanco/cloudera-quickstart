@@ -28,4 +28,4 @@ services:
     tty: true
     stdin_open: true
     volumes: 
-      - /home/vdm/code/cloudera-quickstart/inf8810:/media/shared_from_local
+      - $PWD/inf8810:/media/shared_from_local

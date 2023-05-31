@@ -80,11 +80,17 @@ monthly_stats = df.groupBy("year", "month") \
 threshold = 2  # Seuil pour définir ce qui est considéré comme une anomalie
 
 
+# # Calculer les limites supérieures et inférieures pour détecter les anomalies
+# monthly_stats = monthly_stats.withColumn("upper_temperature", col("avg_temperature") + threshold * col("stddev_temperature"))
+# monthly_stats = monthly_stats.withColumn("lower_temperature", col("avg_temperature") - threshold * col("stddev_temperature"))
+# monthly_stats = monthly_stats.withColumn("upper_humidity", col("avg_humidity") + threshold * col("stddev_humidity"))
+# monthly_stats = monthly_stats.withColumn("lower_humidity", col("avg_humidity") - threshold * col("stddev_humidity"))
+
 # Calculer les limites supérieures et inférieures pour détecter les anomalies
-monthly_stats = monthly_stats.withColumn("upper_temperature", col("avg_temperature") + threshold * col("stddev_temperature"))
-monthly_stats = monthly_stats.withColumn("lower_temperature", col("avg_temperature") - threshold * col("stddev_temperature"))
-monthly_stats = monthly_stats.withColumn("upper_humidity", col("avg_humidity") + threshold * col("stddev_humidity"))
-monthly_stats = monthly_stats.withColumn("lower_humidity", col("avg_humidity") - threshold * col("stddev_humidity"))
+monthly_stats = monthly_stats.withColumn("upper_temperature", round(col("avg_temperature") + threshold * col("stddev_temperature"), 2))
+monthly_stats = monthly_stats.withColumn("lower_temperature", round(col("avg_temperature") - threshold * col("stddev_temperature"), 2))
+monthly_stats = monthly_stats.withColumn("upper_humidity", round(col("avg_humidity") + threshold * col("stddev_humidity"), 2))
+monthly_stats = monthly_stats.withColumn("lower_humidity", round(col("avg_humidity") - threshold * col("stddev_humidity"), 2))
 
 
 # Identifier les mois ou les années avec des anomalies de température ou d'humidité
