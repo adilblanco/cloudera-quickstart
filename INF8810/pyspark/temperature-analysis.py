@@ -6,16 +6,20 @@ import re
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
-from pyspark.sql.functions import (min, max, avg, expr, desc, stddev, abs, col)
+from pyspark.sql.functions import (avg, expr, stddev, desc, abs, col)
 
 
 sc = SparkContext("local[*]", "tp1")
 sqlContext = SQLContext(sc)
 
+# Charger les fichiers de données à partir du chemin spécifié dans HDFS
 data = sc.textFile("/user/cloudera/data")
 
-code = "[01459]"
+# Valeur utilisée pour les enregistrements manquants
 missing = "+9999"
+# Codes acceptés pour la température et l'humidité
+code = "[01459]"
+
 
 rdd = data.map(lambda row: (
         row[15:23],     # date
@@ -41,6 +45,7 @@ rdd = data.map(lambda row: (
                 ))
 
 
+# Définition du schéma pour le DataFrame
 schema = StructType([
     StructField("date", StringType(), True),
     StructField("latitude", StringType(), True),
@@ -50,11 +55,12 @@ schema = StructType([
     StructField("humidity", IntegerType(), True)
 ])
 
+
 # Créer un DataFrame à partir de RDD en utilisant le schéma spécifié
 df = sqlContext.createDataFrame(rdd, schema=schema)
-
 # Sélectionner les colonnes pertinentes pour l'analyse
 df = data.select("date", "temperature", "humidity")
+
 
 # Ajouter une colonne "year" au DataFrame en extrayant les 4 premiers caractères de la colonne "date"
 df = df.withColumn("year", expr("substring(date, 1, 4)").cast("integer"))
