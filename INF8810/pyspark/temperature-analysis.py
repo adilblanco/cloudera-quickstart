@@ -50,14 +50,15 @@ schema = StructType([
     StructField("humidity", IntegerType(), True)
 ])
 
-# create dataframe
+# Créer un DataFrame à partir de RDD en utilisant le schéma spécifié
 df = sqlContext.createDataFrame(rdd, schema=schema)
 
 # Sélectionner les colonnes pertinentes pour l'analyse
 df = data.select("date", "temperature", "humidity")
 
-# create new columns year & month
+# Ajouter une colonne "year" au DataFrame en extrayant les 4 premiers caractères de la colonne "date"
 df = df.withColumn("year", expr("substring(date, 1, 4)").cast("integer"))
+# Ajouter une colonne "month" au DataFrame en extrayant les caractères 5 et 6 de la colonne "date"
 df = df.withColumn("month", expr("substring(date, 5, 2)").cast("integer"))
 
 
@@ -89,7 +90,7 @@ anomalies = monthly_stats.filter(
                 ).orderBy("year", "month")
 
 
-# Afficher les mois ou les années avec des anomalies
+# Afficher les mois et les années avec des anomalies
 anomalies.show()
 
 # +----+-----+-------------------+-------------------+------------------+------------------+------------------+-------------------+------------------+-------------------+
