@@ -18,8 +18,7 @@ for line in sys.stdin:
         line[87:92],    # Température
         line[92:93],    # Code de qualité de la température
         line[93:98],    # Humidité
-        # line[99:100],   # Code de qualité de l'humidité
-        line[98:99],   # Code de qualité de l'humidité
+        line[98:99],    # Code de qualité de l'humidité
     )
 
     # Vérification si les enregistrements ne sont pas manquants
